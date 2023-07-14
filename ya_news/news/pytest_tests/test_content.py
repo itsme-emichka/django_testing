@@ -8,7 +8,9 @@ from django.conf import settings
 def test_posts_count_on_main(posts, client):
     response = client.get(reverse('news:home'))
     assert (
-        len(response.context['object_list']) == settings.NEWS_COUNT_ON_HOME_PAGE
+        len(
+            response.context['object_list']
+        ) == settings.NEWS_COUNT_ON_HOME_PAGE
     )
 
 

@@ -7,14 +7,14 @@ from pytest_django.asserts import assertRedirects
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-        'name, pk',
-        (
-            ('news:home', None),
-            ('news:detail', pytest.lazy_fixture('post_id')),
-            ('news:home', None),
-            ('news:home', None),
-            ('news:home', None),
-        )
+    'name, pk',
+    (
+        ('news:home', None),
+        ('news:detail', pytest.lazy_fixture('post_id')),
+        ('news:home', None),
+        ('news:home', None),
+        ('news:home', None),
+    )
 )
 def test_anonymus_access_pages(name, pk, client):
     url = reverse(name, args=pk)
