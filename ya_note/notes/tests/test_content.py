@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from notes.models import Note
+from notes.tests.enums import Views
 
 User = get_user_model()
 
@@ -34,8 +35,8 @@ class TestContent(TestCase):
 
     def test_forms_are_in_add_edit_pages(self):
         names_args = (
-            ('notes:add', None),
-            ('notes:edit', self.note.slug)
+            (Views.ADD_NOTE, None),
+            (Views.EDIT_NOTE, self.note.slug)
         )
         for name, slug in names_args:
             self.client.force_login(self.author)
