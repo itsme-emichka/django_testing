@@ -17,10 +17,9 @@ def test_posts_count_on_main(posts, client):
 @pytest.mark.django_db
 def test_news_sorting(posts, client):
     response = client.get(reverse('news:home'))
-    all_dates = []
-    for post in response.context['object_list']:
-        all_dates.append(post.date)
+    all_dates = [post.date for post in response.context['object_list']]
     sorted_dates = sorted(all_dates, reverse=True)
+    print(all_dates)
     assert all_dates == sorted_dates
 
 
@@ -29,7 +28,6 @@ def test_comments_sorting(comments, client, post):
     response = client.get(reverse('news:detail', args=(post.id,)))
     assert 'news' in response.context
     page_comments = response.context['news'].comment_set.all()
-    print(page_comments[0].created)
     assert page_comments[0].created < page_comments[1].created
 
 

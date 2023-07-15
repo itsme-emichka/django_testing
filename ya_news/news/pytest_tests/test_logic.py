@@ -15,7 +15,8 @@ def test_anonymous_cant_comment(client, comment_form, post):
     login_url = reverse('users:login')
     expected_url = f'{login_url}?next={url}'
     response = client.post(url, data=comment_form)
-    assert Comment.objects.count() == 0
+    expected_count = 0
+    assert Comment.objects.count() == expected_count
     assertRedirects(response, expected_url)
 
 
@@ -23,7 +24,8 @@ def test_anonymous_cant_comment(client, comment_form, post):
 def test_authorized_user_can_comment(admin_client, post, comment_form):
     url = reverse('news:detail', args=(post.id,))
     admin_client.post(url, data=comment_form)
-    assert Comment.objects.count() == 1
+    expected_count = 1
+    assert Comment.objects.count() == expected_count
     new_comment = Comment.objects.get()
     assert new_comment.text == comment_form['text']
 
@@ -31,14 +33,16 @@ def test_authorized_user_can_comment(admin_client, post, comment_form):
 def test_bad_comment(admin_client, post, bad_comment_form):
     url = reverse('news:detail', args=(post.id,))
     admin_client.post(url, data=bad_comment_form)
-    assert Comment.objects.count() == 0
+    expected_count = 0
+    assert Comment.objects.count() == expected_count
     assertRaisesMessage(ValidationError, WARNING)
 
 
 def test_author_can_edit_comment(author_client, comment, comment_form_edit):
     url = reverse('news:edit', args=(comment.id,))
     author_client.post(url, data=comment_form_edit)
-    assert Comment.objects.count() == 1
+    expected_count = 1
+    assert Comment.objects.count() == expected_count
     edited_comment = Comment.objects.get()
     assert edited_comment.text == comment_form_edit['text']
 
@@ -46,7 +50,8 @@ def test_author_can_edit_comment(author_client, comment, comment_form_edit):
 def test_author_can_delete_comment(author_client, comment):
     url = reverse('news:delete', args=(comment.id,))
     author_client.delete(url)
-    assert Comment.objects.count() == 0
+    expected_count = 0
+    assert Comment.objects.count() == expected_count
 
 
 def test_other_user_cant_edit_comment(
@@ -55,7 +60,8 @@ def test_other_user_cant_edit_comment(
     url = reverse('news:edit', args=(comment.id,))
     response = admin_client.post(url, data=comment_form_edit)
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert Comment.objects.count() == 1
+    expected_count = 1
+    assert Comment.objects.count() == expected_count
     assert Comment.objects.get().text == comment.text
 
 
@@ -63,4 +69,5 @@ def test_other_user_cant_delete_comment(admin_client, comment):
     url = reverse('news:delete', args=(comment.id,))
     response = admin_client.delete(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert Comment.objects.count() == 1
+    expected_count = 1
+    assert Comment.objects.count() == expected_count
