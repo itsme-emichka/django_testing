@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from notes.models import Note
-from notes.tests.enums import Views
 
 User = get_user_model()
 
@@ -21,14 +20,14 @@ class TestAnonymousPages(TestCase):
             slug='test-note',
             author=cls.author,
         )
-        cls.login_url = reverse(Views.LOGIN)
+        cls.login_url = reverse('users:login')
 
     def test_pages_for_all(self):
         names = (
-            Views.HOME,
-            Views.LOGIN,
-            Views.LOGOUT,
-            Views.SIGHNUP,
+            'notes:home',
+            'users:login',
+            'users:logout',
+            'users:signup',
         )
         for name in names:
             with self.subTest(name=name):
@@ -37,12 +36,12 @@ class TestAnonymousPages(TestCase):
 
     def test_anonymous_redirects(self):
         names_args = (
-            (Views.NOTE_LIST, None),
-            (Views.SUCCESS, None),
-            (Views.ADD_NOTE, None),
-            (Views.NOTE_DETAIL, self.note.slug),
-            (Views.EDIT_NOTE, self.note.slug),
-            (Views.DELETE_NOTE, self.note.slug),
+            ('notes:list', None),
+            ('notes:success', None),
+            ('notes:add', None),
+            ('notes:detail', self.note.slug),
+            ('notes:edit', self.note.slug),
+            ('notes:delete', self.note.slug),
         )
         for name, arg in names_args:
             with self.subTest(name=name):
@@ -70,9 +69,9 @@ class TestNotes(TestCase):
 
     def test_pages_for_user(self):
         names = (
-            Views.NOTE_LIST,
-            Views.SUCCESS,
-            Views.ADD_NOTE,
+            'notes:list',
+            'notes:success',
+            'notes:add',
         )
         for name in names:
             with self.subTest(name=name):
@@ -86,9 +85,9 @@ class TestNotes(TestCase):
             (self.reader, HTTPStatus.NOT_FOUND),
         )
         names = (
-            Views.NOTE_DETAIL,
-            Views.EDIT_NOTE,
-            Views.DELETE_NOTE,
+            'notes:detail',
+            'notes:edit',
+            'notes:delete',
         )
         for user, status in users_statuses:
             self.client.force_login(user)
