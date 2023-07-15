@@ -19,7 +19,6 @@ def test_news_sorting(posts, client):
     response = client.get(reverse('news:home'))
     all_dates = [post.date for post in response.context['object_list']]
     sorted_dates = sorted(all_dates, reverse=True)
-    print(all_dates)
     assert all_dates == sorted_dates
 
 
